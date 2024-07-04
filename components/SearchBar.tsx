@@ -1,17 +1,35 @@
 "use client";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import { updateSearchParams } from "../app/api/fetchCars";
 import Image from "next/image";
 
 import SearchManufacturer from "./SearchManufacturer";
 
+const SearchButton = ({ otherClasses }: { otherClasses: string }) => (
+  <button type="submit" className={`-ml-3 z-10 ${otherClasses}`}>
+    <Image
+      src={"/magnifying-glass.svg"}
+      alt={"magnifying glass"}
+      width={40}
+      height={40}
+      className="object-contain"
+    />
+  </button>
+);
+
 const SearchBar = () => {
   const router = useRouter();
-
   const [manufacturer, setManuFacturer] = useState("");
   const [model, setModel] = useState("");
 
-  const handleSearch = () => {};
+  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (manufacturer.trim() === "" && model.trim() === "") {
+      return alert("Please provide some input");
+    }
+    updateSearchParams(model.toLowerCase(), manufacturer.toLowerCase());
+  };
 
   return (
     <form className="searchbar" onSubmit={handleSearch}>
@@ -20,7 +38,7 @@ const SearchBar = () => {
           manufacturer={manufacturer}
           setManuFacturer={setManuFacturer}
         />
-        {/* <SearchButton otherClasses="sm:hidden" /> */}
+        <SearchButton otherClasses="sm:hidden" />
       </div>
       <div className="searchbar__item">
         <Image
@@ -38,9 +56,9 @@ const SearchBar = () => {
           placeholder="Tiguan..."
           className="searchbar__input"
         />
-        {/* <SearchButton otherClasses="sm:hidden" /> */}
+        <SearchButton otherClasses="sm:hidden" />
       </div>
-      {/* <SearchButton otherClasses="max-sm:hidden" /> */}
+      <SearchButton otherClasses="max-sm:hidden" />
     </form>
   );
 };
